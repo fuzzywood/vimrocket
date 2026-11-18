@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    image: learnvim:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_FILE: /data/learnvim.db
+      BACKUP_DIR: /data/backups
+      TRUST_PROXY: "true"
+    ports:
+      - "127.0.0.1:${APP_PORT:-3100}:3000"
+    volumes:
+      - learnvim-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  learnvim-data:

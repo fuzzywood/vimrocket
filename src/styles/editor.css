@@ -1,0 +1,248 @@
+.vim-editor {
+  --line-h: 1.6em;
+  --ed-bg: #272822;
+  --ed-fg: #f8f8f2;
+  --ed-line: #3e3d32;
+  --ed-gutter: #75715e;
+  --ed-sel: #4b5a8c;
+  --ed-bar: #1e1f1c;
+  --mk-pink: #f92672;
+  --mk-yellow: #e6db74;
+  --mk-purple: #ae81ff;
+  --mk-green: #a6e22e;
+  --mk-blue: #66d9ef;
+  --mk-orange: #fd971f;
+  --mk-comment: #75715e;
+  position: relative;
+  font-family: var(--mono);
+  font-size: 17px;
+  color: var(--ed-fg);
+  background: var(--ed-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  outline: none;
+  cursor: text;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+
+.vim-lines {
+  padding: 8px 0;
+}
+
+.vim-line {
+  display: flex;
+  height: var(--line-h);
+  line-height: var(--line-h);
+  white-space: pre;
+}
+
+.vim-curline {
+  background: var(--ed-line);
+}
+
+.vim-gutter {
+  flex-shrink: 0;
+  width: 4.2ch;
+  padding-right: 1.2ch;
+  text-align: right;
+  color: #90908a;
+  user-select: none;
+}
+
+.vim-curline .vim-gutter {
+  color: var(--ed-fg);
+}
+
+.vim-empty .vim-gutter {
+  color: var(--mk-comment);
+  text-align: left;
+  padding-left: 0.6ch;
+}
+
+.vim-text {
+  position: relative;
+}
+
+.vim-probe {
+  position: absolute;
+  visibility: hidden;
+}
+
+.tk-kw,
+.tk-op {
+  color: var(--mk-pink);
+}
+
+.tk-str {
+  color: var(--mk-yellow);
+}
+
+.tk-num,
+.tk-const {
+  color: var(--mk-purple);
+}
+
+.tk-com {
+  color: var(--mk-comment);
+  font-style: italic;
+}
+
+.tk-fn {
+  color: var(--mk-green);
+}
+
+.tk-type {
+  color: var(--mk-blue);
+  font-style: italic;
+}
+
+.tk-head {
+  color: var(--mk-green);
+  font-weight: 700;
+}
+
+.tk-list {
+  color: var(--mk-orange);
+}
+
+.tk-punc {
+  color: #cfcfc2;
+}
+
+.vim-editor .dim {
+  color: #57564a;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.vim-editor .fm {
+  color: var(--ed-bg);
+  background: var(--mk-orange);
+  font-weight: 700;
+  border-radius: 2px;
+}
+
+.vim-editor .sel {
+  background: var(--ed-sel);
+  color: #ffffff;
+}
+
+.vim-editor .hl {
+  background: rgba(230, 219, 116, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(230, 219, 116, 0.7);
+}
+
+.vim-editor .cur {
+  background: var(--ed-fg);
+  color: var(--ed-bg);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+.vim-editor .cur-bar,
+.vim-cmdline .cur-bar {
+  box-shadow: inset 2px 0 0 var(--ed-fg);
+}
+
+.vim-editor .cur-under {
+  box-shadow: inset 0 -3px 0 var(--mk-orange);
+}
+
+.vim-editor[data-mode="command"] .cur {
+  animation: none;
+  background: var(--ed-gutter);
+}
+
+.vim-editor .cur.sel {
+  animation-name: blink-sel;
+}
+
+@keyframes blink-sel {
+  50% {
+    background: var(--ed-sel);
+    color: #ffffff;
+  }
+}
+
+@keyframes blink {
+  50% {
+    background: transparent;
+    color: inherit;
+  }
+}
+
+.vim-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px 0 0;
+  height: 2.6em;
+  background: var(--ed-bar);
+  font-size: 0.92em;
+  color: #a59f85;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.vim-mode-pill {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--mk-blue);
+  color: var(--ed-bg);
+}
+
+.vim-mode-pill[data-mode="insert"],
+.vim-mode-pill[data-mode="replace"] {
+  background: var(--mk-green);
+}
+
+.vim-mode-pill[data-mode^="visual"] {
+  background: var(--mk-purple);
+}
+
+.vim-mode-pill[data-mode="command"] {
+  background: var(--mk-yellow);
+}
+
+.vim-file {
+  color: var(--ed-fg);
+}
+
+.vim-spacer {
+  flex: 1;
+}
+
+.vim-rec {
+  color: var(--mk-pink);
+  font-weight: 700;
+}
+
+.vim-showcmd {
+  color: var(--ed-fg);
+  min-width: 6ch;
+  text-align: right;
+}
+
+.vim-cmdline {
+  background: var(--ed-bg);
+  height: 2.2em;
+  line-height: 2.2em;
+  padding: 0 12px;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vim-cmdline.mode {
+  font-weight: 700;
+  color: var(--ed-fg);
+}
+
+.vim-cmdline.error {
+  color: var(--mk-pink);
+}
