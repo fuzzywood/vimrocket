@@ -90,9 +90,13 @@ function renderRail(progress: Progress, activeId: string | null, state: SidebarS
         { href: state.user ? "/account" : "/login", title: state.user ? `Signed in as ${state.user}` : "Sign in", class: `rail-account${activeId === "account" ? " active" : ""}` },
         state.user ? state.user[0].toUpperCase() : "→",
       ),
+      h("a", { href: "/impressum", title: "Impressum & Datenschutz", class: "rail-legal" }, "§"),
     ),
   );
 }
+
+export const legalLinks = (cls = "legal-links"): HTMLElement =>
+  h("nav", { class: cls, "aria-label": "Legal" }, h("a", { href: "/impressum" }, "Impressum"), h("a", { href: "/datenschutz" }, "Datenschutz"));
 
 export function renderSidebar(progress: Progress, activeId: string | null, state: SidebarState): HTMLElement {
   if (state.collapsed) return renderRail(progress, activeId, state);
@@ -168,5 +172,6 @@ export function renderSidebar(progress: Progress, activeId: string | null, state
         );
       }),
     ),
+    legalLinks("legal-links sidebar-legal"),
   );
 }

@@ -14,7 +14,7 @@ let store: Store;
 let base: string;
 let outbox: MailMessage[];
 
-async function start(options: { trustProxy?: boolean; secureCookies?: boolean; staticDir?: string } = {}): Promise<void> {
+async function start(options: { trustProxy?: boolean; secureCookies?: boolean; staticDir?: string; legalDir?: string } = {}): Promise<void> {
   store = new Store(":memory:");
   outbox = [];
   server = createServer(
@@ -295,5 +295,34 @@ describe("static site", () => {
     const xml = await sitemap.text();
     expect(xml).toContain("<loc>https://vimrocket.test/</loc>");
     expect(xml).toContain("<loc>https://vimrocket.test/lesson/hjkl</loc>");
+  });
+});
+
+describe("legal pages", () => {
+  let legal: string;
+
+  beforeEach(async () => {
+    legal = mkdtempSync(join(tmpdir(), "learnvim-legal-"));
+    writeFileSync(join(legal, "impressum.html"), "<h1>Impressum</h1><p>Max Mustermann</p>");
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    store.close();
+    await start({ legalDir: legal });
+  });
+
+  afterEach(() => rmSync(legal, { recursive: true, force: true }));
+
+  it("serves the configured content as a standalone page", async () => {
+    const res = await fetch(`${base}/impressum`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain("<p>Max Mustermann</p>");
+    expect(html).toContain('href="/datenschutz"');
+    expect(html).toContain('content="noindex,follow"');
+  });
+
+  it("shows a placeholder with 404 when a file is missing", async () => {
+    const res = await fetch(`${base}/datenschutz`);
+    expect(res.status).toBe(404);
+    expect(await res.text()).toContain("noch nicht eingerichtet");
   });
 });

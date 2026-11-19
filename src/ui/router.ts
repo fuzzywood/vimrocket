@@ -1,4 +1,4 @@
-import { NOT_FOUND_META, SITE_NAME, type PageMeta } from "../seo/meta";
+import { NOT_FOUND_META, SERVER_PAGES, SITE_NAME, type PageMeta } from "../seo/meta";
 
 export function upgradeLegacyHash(): boolean {
   const match = /^#\/(.*)$/.exec(location.hash);
@@ -54,6 +54,7 @@ export class Router {
     if (!anchor || (anchor.target && anchor.target !== "_self") || anchor.hasAttribute("download")) return;
     const url = new URL(anchor.href, location.href);
     if (url.origin !== location.origin || url.pathname.startsWith("/api/")) return;
+    if ((SERVER_PAGES as readonly string[]).includes(url.pathname)) return;
     e.preventDefault();
     this.go(url.pathname + url.search + url.hash);
   };

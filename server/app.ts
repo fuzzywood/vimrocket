@@ -11,6 +11,7 @@ import {
   validateUsername,
   verifyPassword,
 } from "./auth.ts";
+import { readLegalPage } from "./legal.ts";
 import { passwordResetEmail, verificationEmail, type Mailer, type MailMessage } from "./mailer.ts";
 import { toSessionUser, type SessionUser, type Store, type TokenPurpose } from "./store.ts";
 
@@ -19,6 +20,7 @@ export interface AppOptions {
   mailer: Mailer;
   appUrl: string;
   staticDir?: string;
+  legalDir?: string;
   secureCookies?: boolean;
   trustProxy?: boolean;
 }
@@ -126,7 +128,7 @@ const publicUser = (user: SessionUser) => ({ username: user.username, email: use
 
 const str = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
 
-export function createApp({ store, mailer, appUrl, staticDir, secureCookies = false, trustProxy = false }: AppOptions): RequestListener {
+export function createApp({ store, mailer, appUrl, staticDir, legalDir, secureCookies = false, trustProxy = false }: AppOptions): RequestListener {
   const authLimiter = new RateLimiter(20, 15 * 60 * 1000);
   const mailIpLimiter = new RateLimiter(10, HOUR);
   const mailTargetLimiter = new RateLimiter(3, HOUR);
@@ -363,6 +365,13 @@ export function createApp({ store, mailer, appUrl, staticDir, secureCookies = fa
     res.end(req.method === "HEAD" ? undefined : body);
   }
 
+  async function serveLegal(req: IncomingMessage, res: ServerResponse, dir: string, path: string): Promise<void> {
+    const page = await readLegalPage(dir, path);
+    if (!page) throw new HttpError(404, "Not found.");
+    res.writeHead(page.status, { "Content-Type": MIME[".html"], "Cache-Control": "no-cache" });
+    res.end(req.method === "HEAD" ? undefined : page.html);
+  }
+
   return (req, res) => {
     for (const [name, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(name, value);
     if (secureCookies) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
@@ -371,7 +380,11 @@ export function createApp({ store, mailer, appUrl, staticDir, secureCookies = fa
       health(res);
       return;
     }
-    const handler = path.startsWith("/api/") ? handleApi(req, res, path) : serveStatic(req, res, path);
+    const handler = path.startsWith("/api/")
+      ? handleApi(req, res, path)
+      : legalDir && (req.method === "GET" || req.method === "HEAD") && (path === "/impressum" || path === "/datenschutz")
+        ? serveLegal(req, res, legalDir, path)
+        : serveStatic(req, res, path);
     handler.catch((err: unknown) => {
       if (res.headersSent) {
         res.end();

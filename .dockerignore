@@ -8,3 +8,4 @@ deploy
 !.env.example
 .git
 *.log
+/legal

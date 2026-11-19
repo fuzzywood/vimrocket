@@ -27,8 +27,8 @@ function prerender(): Plugin {
 export default defineConfig({
   plugins: [prerender()],
   server: {
-    proxy: {
-      "/api": `http://127.0.0.1:${process.env.API_PORT ?? 3001}`,
-    },
+    proxy: Object.fromEntries(
+      ["/api", "/impressum", "/datenschutz"].map((path) => [path, `http://127.0.0.1:${process.env.API_PORT ?? 3001}`]),
+    ),
   },
 });

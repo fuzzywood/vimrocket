@@ -20,12 +20,17 @@ if (config.smtp) {
   console.warn("[mail] SMTP_HOST is not set — emails are printed to the console instead of being sent.");
 }
 
+for (const file of ["impressum.html", "datenschutz.html"]) {
+  if (!existsSync(resolve(config.legalDir, file))) console.warn(`[legal] ${resolve(config.legalDir, file)} is missing — the page shows a placeholder.`);
+}
+
 const server = createServer(
   createApp({
     store,
     mailer,
     appUrl: config.appUrl,
     staticDir: config.production && existsSync(distDir) ? distDir : undefined,
+    legalDir: config.legalDir,
     secureCookies: config.secureCookies,
     trustProxy: config.trustProxy,
   }),

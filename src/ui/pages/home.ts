@@ -1,5 +1,6 @@
 import { allLessons, chapters } from "../../lessons";
 import { h } from "../dom";
+import { legalLinks } from "../sidebar";
 import type { Progress } from "../progress";
 
 export function renderHome(progress: Progress): HTMLElement {
@@ -49,11 +50,12 @@ export function renderHome(progress: Progress): HTMLElement {
         );
       }),
     ),
-    started
-      ? h(
-          "footer",
-          { class: "home-foot" },
-          h(
+    h(
+      "footer",
+      { class: "home-foot" },
+      legalLinks(),
+      started
+        ? h(
             "button",
             {
               class: "btn small",
@@ -62,9 +64,9 @@ export function renderHome(progress: Progress): HTMLElement {
               },
             },
             "Reset progress",
-          ),
-        )
-      : null,
+          )
+        : null,
+    ),
   );
 }
 

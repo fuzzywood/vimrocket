@@ -13,6 +13,7 @@ export interface Config {
   host: string;
   port: number;
   databaseFile: string;
+  legalDir: string;
   appUrl: string;
   trustProxy: boolean;
   secureCookies: boolean;
@@ -33,6 +34,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     host: env.HOST ?? "127.0.0.1",
     port: Number(env.PORT ?? 3001),
     databaseFile: resolve(env.DATABASE_FILE ?? "data/learnvim.db"),
+    legalDir: resolve(env.LEGAL_DIR ?? "legal"),
     appUrl,
     trustProxy: bool(env.TRUST_PROXY, false),
     secureCookies: bool(env.SECURE_COOKIES, appUrl.startsWith("https://")),

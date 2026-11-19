@@ -392,3 +392,29 @@ a.sync {
   font-size: 0.85rem;
   background: transparent;
 }
+
+.legal-links {
+  display: flex;
+  gap: 14px;
+  font-size: 0.8rem;
+}
+
+.legal-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.legal-links a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.sidebar-legal {
+  margin: 18px 8px 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.rail-links > .rail-legal {
+  font-size: 0.95rem;
+}

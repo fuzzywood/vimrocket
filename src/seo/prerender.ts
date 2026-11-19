@@ -150,7 +150,7 @@ function render(template: string, meta: PageMeta, body: string, ref?: LessonRef)
   return template
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(meta.title)}</title>`)
     .replace("<!--seo:head-->", head(meta, ref))
-    .replace("<!--seo:body-->", body);
+    .replace("<!--seo:body-->", `${body}\n<footer class="seo-page seo-legal"><a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a></footer>`);
 }
 
 const fileFor = (path: string): string => (path === "/" ? "index.html" : `${path.slice(1)}/index.html`);
